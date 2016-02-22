@@ -1,0 +1,20 @@
+{
+  "name": "edison-mp3-shield",
+  "version": "0.0.1",
+  "description": "",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "edison",
+    "mp3",
+    "shield",
+    "arduino"
+  ],
+  "author": "Matthew Mihok <matthew@mihok.computer>",
+  "license": "Beerware",
+  "dependencies": {
+    "mraa": "^0.9.3"
+  }
+}
