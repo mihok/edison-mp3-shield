@@ -88,7 +88,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
   buffer[2] = highByte;
   buffer[3] = lowByte;
 
-  this.SPI.write(buffer);
+  console.log('Debug:', this.SPI.write(buffer));
 
   while (!this.Audio_DREQ.read());
   this.Audio_CS.write(HIGH);
@@ -104,7 +104,7 @@ Shield.prototype.readRegister = function (addressByte) {
   buffer[0] = 0x03;
   buffer[1] = addressByte;
 
-  this.SPI.write(buffer);
+  console.log('Debug:', this.SPI.write(buffer));
 
   firstResponse = this.SPI.write(0xFF);
   while (!this.Audio_DREQ.read());
@@ -112,7 +112,12 @@ Shield.prototype.readRegister = function (addressByte) {
   while (!this.Audio_DREQ.read());
   this.Audio_CS.write(HIGH);
 
+  console.log('Debug:', firstResponse.toString('hex'));
+  console.log('Debug:', secondResponse.toString('hex'));
+
   result = firstResponse << 8 | secondResponse;
+
+  console.log('Debug:', result.toString('hex'));
 
   return result;
 };
