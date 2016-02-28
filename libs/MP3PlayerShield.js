@@ -81,8 +81,8 @@ function Shield (options) {
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
   while (!this.Audio_DREQ.read()) {
     console.log('MP3Shield:', 'DREQ Direction =', this.Audio_DREQ.readDir());
-    console.log('MP3Shield:', 'DREQ =', this.Audio_DREQ.readD());
-  };
+    console.log('MP3Shield:', 'DREQ =', this.Audio_DREQ.read());
+  }
   this.Audio_CS.write(LOW);
 
   var buffer = new Buffer(4);
