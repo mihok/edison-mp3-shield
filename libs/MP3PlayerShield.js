@@ -149,7 +149,7 @@ Shield.prototype.setup = function (callback) {
   console.log('MP3Shield:', 'Writing SPI mode 0');
   console.log('Debug:', this.SPI.mode(0));
   console.log('MP3Shield:', 'Setting clock to 1MHz');
-  console.log('Debug:', this.SPI.frequency(100000));
+  console.log('Debug:', this.SPI.frequency(1000000));
 
   console.log('Debug:', this.SPI.write(new Buffer(0xFF)));
 
@@ -176,7 +176,7 @@ Shield.prototype.setup = function (callback) {
       MP3Clock = result;
 
       that.writeRegister(SCI_CLOCKF, 0x60, 0x00, function () {
-        that.SPI.frequency(400000);
+        that.SPI.frequency(4000000);
 
         that.readRegister(SCI_CLOCKF, function (result) {
           MP3Clock = result;
