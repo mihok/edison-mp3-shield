@@ -53,29 +53,29 @@ function Shield (options) {
 
   // VS1053
   console.log('MP3Shield:', 'Initalizing VS1053 data request interrupt ..');
-  this.Audio_DREQ = MRAA.Gpio(AUDIO_DREQ);
+  this.Audio_DREQ = new MRAA.Gpio(AUDIO_DREQ);
   this.Audio_DREQ.dir(MRAA.DIR_IN);
 
   console.log('MP3Shield:', 'Initalizing VS1053 chip select input ..');
-  this.Audio_CS = MRAA.Gpio(AUDIO_CS);
+  this.Audio_CS = new MRAA.Gpio(AUDIO_CS);
   this.Audio_CS.dir(MRAA.DIR_OUT);
 
   console.log('MP3Shield:', 'Initalizing VS1053 data chip select input ..');
-  this.Audio_DCS = MRAA.Gpio(AUDIO_DCS);
+  this.Audio_DCS = new MRAA.Gpio(AUDIO_DCS);
   this.Audio_DCS.dir(MRAA.DIR_OUT);
 
   console.log('MP3Shield:', 'Initalizing VS1053 reset input ..');
-  this.Audio_Reset = MRAA.Gpio(AUDIO_RST);
+  this.Audio_Reset = new MRAA.Gpio(AUDIO_RST);
   this.Audio_Reset.dir(MRAA.DIR_OUT);
 
   // SD
   console.log('MP3Shield:', 'Initalizing SD chip select input ..');
-  this.SD_CS = MRAA.Gpio(SD_CS);
+  this.SD_CS = new MRAA.Gpio(SD_CS);
 
   // Seems as though you only need to initialize SPI once, not all 3/4
   //  separately
   console.log('MP3Shield:', 'Initalizing SPI Tx ..');
-  this.SPI = MRAA.Spi(SPI_DEFAULT);
+  this.SPI = new MRAA.Spi(SPI_DEFAULT);
 }
 
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
@@ -92,7 +92,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
 
   while (!this.Audio_DREQ.read());
   this.Audio_CS.write(HIGH);
-}
+};
 
 Shield.prototype.readRegister = function (addressByte) {
   var firstResponse, secondResponse, result;
@@ -115,11 +115,11 @@ Shield.prototype.readRegister = function (addressByte) {
   result = firstResponse << 8 | secondResponse;
 
   return result;
-}
+};
 
 Shield.prototype.setVolume  = function (left, right) {
   this.writeRegister(SCI_VOL, left, right);
-}
+};
 
 Shield.prototype.setup = function () {
   var MP3Mode, MP3Status, MP3Clock, VSVersion;
@@ -157,6 +157,6 @@ Shield.prototype.setup = function () {
 
   MP3Clock = this.readRegister(SCI_CLOCKF);
   console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString('hex'));
-}
+};
 
 module.exports = Shield;
