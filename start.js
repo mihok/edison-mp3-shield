@@ -6,12 +6,10 @@ var EXIT = 0;
 
 wave.setup(function () {
   console.log('MP3Shield:', 'Ready');
-  setTimeout(function () {
-    console.log('MP3Shield:', 'ETIMEOUT');
-    EXIT = 1;
-  }, 120000);
 
   EXIT = 1;
 });
 
-while(!EXIT);
+while(!EXIT) {
+  console.log('PING PONG');
+};
