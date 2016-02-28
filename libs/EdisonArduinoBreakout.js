@@ -4,6 +4,8 @@ var Edison = require('./Edison');
 
 class ArduinoBreakout extends Edison {
   constructor() { }
+
+
 }
 
 module.exports = ArduinoBreakout;
