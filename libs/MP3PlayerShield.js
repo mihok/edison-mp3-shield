@@ -1,7 +1,5 @@
 var MRAA = require('mraa');
 
-var MP3Shield;
-
 // DATA ////////////////////////////////////////////////////////////////////////
 
 const helloMP3 = require('./sample');
@@ -165,6 +163,3 @@ class Shield {
 }
 
 module.exports = Shield;
-
-MP3Shield = new Shield();
-MP3Shield.setup();
