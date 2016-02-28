@@ -78,7 +78,7 @@ function Shield (options) {
   this.SPI = MRAA.Spi(SPI_DEFAULT);
 }
 
-Shield.prototype.writeRegister (addressByte, highByte, lowByte) {
+Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
   while (!this.Audio_DREQ.read());
   this.Audio_CS.write(LOW);
 
@@ -94,7 +94,7 @@ Shield.prototype.writeRegister (addressByte, highByte, lowByte) {
   this.Audio_CS.write(HIGH);
 }
 
-Shield.prototype.readRegister (addressByte) {
+Shield.prototype.readRegister = function (addressByte) {
   var firstResponse, secondResponse, result;
 
   while (!this.Audio_DREQ.read());
@@ -117,11 +117,11 @@ Shield.prototype.readRegister (addressByte) {
   return result;
 }
 
-Shield.prototype.setVolume(left, right) {
+Shield.prototype.setVolume  = function (left, right) {
   this.writeRegister(SCI_VOL, left, right);
 }
 
-Shield.prototype.setup () {
+Shield.prototype.setup = function () {
   var MP3Mode, MP3Status, MP3Clock, VSVersion;
 
   // Setup SPI for VS1053
