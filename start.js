@@ -19,6 +19,6 @@ wave.setup(function () {
 });
 
 while(!EXIT) {
-  setTimeout(EXIT_health, 1000);
-  setTimeout(EXIT_timeout, 120000);
+  setInterval(EXIT_health, 1000);
+  setInterval(EXIT_timeout, 120000);
 }
