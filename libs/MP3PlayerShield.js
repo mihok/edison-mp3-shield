@@ -79,11 +79,7 @@ function Shield (options) {
 }
 
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
-  while (!this.Audio_DREQ.read()) {
-    console.log('MP3Shield:', 'DREQ Direction =', this.Audio_DREQ.readDir());
-    console.log('MP3Shield:', 'DREQ =', this.Audio_DREQ.read());
-    console.log('MP3Shield:', 'CS =', this.Audio_CS.readDir());
-  }
+  while (!this.Audio_DREQ.read());
   this.Audio_CS.write(LOW);
 
   var buffer = new Buffer(4);
@@ -142,7 +138,7 @@ Shield.prototype.setup = function () {
   console.log('MP3Shield:', 'Setting clock to 1MHz');
   this.SPI.frequency(1000000);
 
-  this.SPI.write(new Buffer(0xFF));
+  console.log('Debug:', this.SPI.write(new Buffer(0xFF)));
 
   // De-select Control
   this.Audio_CS.write(HIGH);
