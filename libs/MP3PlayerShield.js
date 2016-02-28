@@ -163,4 +163,4 @@ class Shield {
   }
 }
 
-module.exports = Shield;
+export default Shield;
