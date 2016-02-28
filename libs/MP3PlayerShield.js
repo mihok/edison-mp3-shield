@@ -181,6 +181,8 @@ Shield.prototype.setup = function (callback) {
         that.readRegister(SCI_CLOCKF, function (result) {
           MP3Clock = result;
           console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString('hex'));
+
+          callback.call(that);
         });
       });
     });
