@@ -81,6 +81,8 @@ function Shield (options) {
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte, callback) {
   var that = this;
 
+
+  console.log('MP3Shield:', 'Starting ISR ...');
   this.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
     console.log('MP3Shield:', 'Waiting for ISR ...');
     console.log('Debug:', that.Audio_CS.write(LOW));
