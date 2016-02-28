@@ -74,7 +74,7 @@ function Shield (options) {
 
   // Seems as though you only need to initialize SPI once, not all 3/4
   //  separately
-  console.log('MP3Shield:', 'Initalizing SPI Tx ..');
+  console.log('MP3Shield:', 'Initalizing SPI ..');
   this.SPI = new MRAA.Spi(SPI_DEFAULT);
 }
 
@@ -126,7 +126,7 @@ Shield.prototype.setup = function () {
 
   // Setup SPI for VS1053
   console.log('MP3Shield:', 'Writing SPI LSB transmission mode 0 (MSB)');
-  this.SPI.lsbmode(0);
+  this.SPI.lsbmode(false);
   console.log('MP3Shield:', 'Writing SPI mode 0');
   this.SPI.mode(0);
   console.log('MP3Shield:', 'Setting clock to 1Mhz');
