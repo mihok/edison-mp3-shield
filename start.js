@@ -6,6 +6,9 @@ var EXIT = 0;
 
 wave.setup(function () {
   console.log('MP3Shield:', 'Ready');
+  setTimeout(function () {
+    EXIT = 1;
+  }, 120000);
 
   EXIT = 1;
 });
