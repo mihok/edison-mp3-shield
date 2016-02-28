@@ -132,11 +132,11 @@ Shield.prototype.setup = function () {
 
   // Setup SPI for VS1053
   console.log('MP3Shield:', 'Writing SPI LSB transmission mode 0 (MSB)');
-  this.SPI.lsbmode(false);
+  console.log('Debug:', this.SPI.lsbmode(false));
   console.log('MP3Shield:', 'Writing SPI mode 0');
-  this.SPI.mode(0);
+  console.log('Debug:', this.SPI.mode(0));
   console.log('MP3Shield:', 'Setting clock to 1MHz');
-  this.SPI.frequency(1000000);
+  console.log('Debug:', this.SPI.frequency(1000000));
 
   console.log('Debug:', this.SPI.write(new Buffer(0xFF)));
 
