@@ -85,7 +85,7 @@ Shield.prototype.waitForDREQ = function () {
   console.log('MP3Shield:', 'Starting ISR ...',
     this.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
       console.log('MP3Shield:', 'ISR!', arguments);
-      deferred.fulfill();
+      deferred.resolve();
     }
   ));
 
@@ -98,7 +98,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
 
   this.waitForDREQ()
     .then(function () {
-      that.cs_low();
+      console.log('MP3Shield:', 'CS_LOW', that.cs_low());
 
       var buffer = new Buffer(4);
       buffer[0] = 0x02;
@@ -111,9 +111,9 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
       return that.waitForDREQ();
     })
     .then(function () {
-      that.cs_high();
+      console.log('MP3Shield:', 'CS_HIGH', that.cs_high());
 
-      return deferred.fulfill();
+      return deferred.resolve();
     });
 
   return deferred.promise;
@@ -126,7 +126,7 @@ Shield.prototype.readRegister = function (addressByte) {
 
   this.waitForDREQ()
     .then(function () {
-      that.cs_low();
+      console.log('MP3Shield:', 'CS_LOW', that.cs_low());
 
       var buffer = new Buffer(2);
       buffer[0] = 0x03;
@@ -134,12 +134,12 @@ Shield.prototype.readRegister = function (addressByte) {
 
       console.log('Debug:', that.SPI.write(buffer));
 
-      firstResponse = that.SPI.write(0xFF);
+      firstResponse = that.SPI.write(new Buffer(0xFF));
       that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-        secondResponse = that.SPI.write(0xFF);
+        secondResponse = that.SPI.write(new Buffer(0xFF));
 
         that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-          that.Audio_CS.write(HIGH);
+          console.log('MP3Shield:', 'CS_HIGH', that.cs_high());
 
           console.log('Debug:', firstResponse.toString('hex'));
           console.log('Debug:', secondResponse.toString('hex'));
@@ -149,10 +149,10 @@ Shield.prototype.readRegister = function (addressByte) {
           console.log('Debug:', result.toString('hex'));
 
           that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-            deferred.fulfill(result);
+            deferred.resolve(result);
           });
         });
-      })
+      });
     });
 
   return deferred.promise;
@@ -165,20 +165,20 @@ Shield.prototype.setVolume  = function (left, right) {
 
 Shield.prototype.cs_low = function () {
   this.init();
-  this.Audio_CS.write(LOW);
+  return this.Audio_CS.write(LOW);
 };
 
 Shield.prototype.cs_high = function () {
-  this.Audio_CS.write(HIGH);
+  return this.Audio_CS.write(HIGH);
 };
 
 Shield.prototype.dcs_low = function () {
   this.init();
-  this.Audio_DCS.write(LOW);
+  return this.Audio_DCS.write(LOW);
 };
 
 Shield.prototype.dcs_high = function () {
-  this.Audio_DCS.write(HIGH);
+  return this.Audio_DCS.write(HIGH);
 };
 
 Shield.prototype.init = function () {
@@ -193,17 +193,15 @@ Shield.prototype.init = function () {
 Shield.prototype.setup = function () {
   var that = this;
 
-  this.init();
+  // this.init();
+
+  // De-select Control
+  console.log('Debug:', 'CS_HIGH', this.cs_high());
+
+  // De-select Data
+  console.log('Debug:', 'DCS_HIGH', this.dcs_high());
 
   this.reset()
-    .then(function () {
-
-      // De-select Control
-      console.log('Debug:', this.Audio_CS.write(HIGH));
-
-      // De-select Data
-      console.log('Debug:', this.Audio_DCS.write(HIGH));
-    })
     .then (function () {
       return that.setVolume(20, 20);
     });
@@ -218,7 +216,7 @@ Shield.prototype.reset = function () {
   setTimeout(function() {
     console.log('Debug:', that.Audio_Reset.write(HIGH));
 
-    deferred.fulfill();
+    deferred.resolve();
   }, 100);
 
   return deferred.promise;
