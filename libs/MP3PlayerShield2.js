@@ -210,7 +210,7 @@ Shield.prototype.setup = function () {
 
 Shield.prototype.reset = function () {
   var that = this;
-  var deferred = Promise.pendin();
+  var deferred = Promise.pending();
   // Reset
   console.log('Debug:', this.Audio_Reset.write(LOW));
   setTimeout(function() {
