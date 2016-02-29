@@ -83,7 +83,7 @@ Shield.prototype.waitForDREQ = function () {
   var deferred = Promise.pending();
 
   console.log('MP3Shield:', 'Starting ISR ...',
-    this.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
+    this.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
       console.log('MP3Shield:', 'ISR!', arguments);
       deferred.resolve();
     }
@@ -138,20 +138,22 @@ Shield.prototype.readRegister = function (addressByte) {
       that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
         secondResponse = that.SPI.write(new Buffer(0xFF));
 
-        that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-          console.log('MP3Shield:', 'CS_HIGH', that.cs_high());
+        that.waitForDREQ()
+          .then(function () {
+            console.log('MP3Shield:', 'CS_HIGH', that.cs_high());
 
-          console.log('Debug:', firstResponse.toString('hex'));
-          console.log('Debug:', secondResponse.toString('hex'));
+            console.log('Debug:', firstResponse.toString('hex'));
+            console.log('Debug:', secondResponse.toString('hex'));
 
-          result = firstResponse << 8 | secondResponse;
+            result = firstResponse << 8 | secondResponse;
 
-          console.log('Debug:', result.toString('hex'));
+            console.log('Debug:', result.toString('hex'));
 
-          that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
+            return that.waitForDREQ();
+          })
+          .then(function () {
             deferred.resolve(result);
           });
-        });
       });
     });
 
