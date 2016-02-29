@@ -82,9 +82,8 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte, callb
   var that = this;
 
 
-  console.log('MP3Shield:', 'Starting ISR ...');
-  this.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
-    console.log('MP3Shield:', 'Waiting for ISR ...');
+  console.log('MP3Shield:', 'Starting ISR ...', this.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
+    console.log('MP3Shield:', 'ISR!', arguments);
     console.log('Debug:', that.Audio_CS.write(LOW));
 
     var buffer = new Buffer(4);
@@ -100,7 +99,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte, callb
       console.log('Debug:', that.Audio_CS.write(HIGH));
       callback();
     });
-  });
+  }));
 };
 
 Shield.prototype.readRegister = function (addressByte, callback) {
