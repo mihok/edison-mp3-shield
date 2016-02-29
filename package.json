@@ -15,6 +15,7 @@
   "author": "Matthew Mihok <matthew@mihok.computer>",
   "license": "Beerware",
   "dependencies": {
+    "bluebird": "^3.3.3",
     "mraa": "^0.9.3"
   }
 }
