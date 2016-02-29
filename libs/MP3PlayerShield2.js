@@ -152,7 +152,8 @@ Shield.prototype.readRegister = function (addressByte) {
             deferred.fulfill(result);
           });
         });
-      });
+      })
+    });
 
   return deferred.promise;
 };
