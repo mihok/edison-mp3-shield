@@ -83,7 +83,7 @@ Shield.prototype.waitForDREQ = function () {
   var deferred = Promise.pending();
 
   console.log('MP3Shield:', 'Starting ISR ...',
-    this.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
+    this.Audio_DREQ.isr(MRAA.EDGE_FALLING, function () {
       console.log('MP3Shield:', 'ISR!', arguments);
       deferred.resolve();
     }
