@@ -154,6 +154,12 @@ Shield.prototype.setup = function (callback) {
   console.log('MP3Shield:', 'Setting clock to 1MHz');
   console.log('Debug:', this.SPI.frequency(process.env.FREQ || 1000000));
 
+  // Reset
+  console.log('Debug:', this.Audio_Reset.write(LOW));
+  setTimeout(function() {
+    console.log('Debug:', this.Audio_Reset.write(HIGH));
+  }, 100);
+
   console.log('Debug:', this.SPI.write(new Buffer(0xFF)));
 
   // De-select Control
