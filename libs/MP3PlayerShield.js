@@ -82,7 +82,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte, callb
   var that = this;
 
 
-  console.log('MP3Shield:', 'Starting ISR ...', this.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
+  console.log('MP3Shield:', 'Starting ISR ...', this.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
     console.log('MP3Shield:', 'ISR!', arguments);
     console.log('Debug:', that.Audio_CS.write(LOW));
 
@@ -94,7 +94,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte, callb
 
     console.log('Debug:', this.SPI.write(buffer));
 
-    that.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
+    that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
       console.log('MP3Shield:', 'Waiting for ISR ...');
       console.log('Debug:', that.Audio_CS.write(HIGH));
       callback();
@@ -106,7 +106,7 @@ Shield.prototype.readRegister = function (addressByte, callback) {
   var that = this;
   var firstResponse, secondResponse, result;
 
-  this.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
+  this.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
     that.Audio_CS.write(LOW);
 
     var buffer = new Buffer(2);
@@ -116,10 +116,10 @@ Shield.prototype.readRegister = function (addressByte, callback) {
     console.log('Debug:', that.SPI.write(buffer));
 
     firstResponse = that.SPI.write(0xFF);
-    that.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
+    that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
       secondResponse = that.SPI.write(0xFF);
 
-      that.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
+      that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
         that.Audio_CS.write(HIGH);
 
         console.log('Debug:', firstResponse.toString('hex'));
@@ -129,7 +129,7 @@ Shield.prototype.readRegister = function (addressByte, callback) {
 
         console.log('Debug:', result.toString('hex'));
 
-        that.Audio_DREQ.isr(MRAA.EDGE_BOTH, function () {
+        that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
           callback(result);
         });
       });
