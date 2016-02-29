@@ -204,7 +204,9 @@ Shield.prototype.setup = function () {
       // De-select Data
       console.log('Debug:', this.Audio_DCS.write(HIGH));
     })
-    .setVolume(20, 20);
+    .then (function () {
+      return that.setVolume(20, 20);
+    });
 
 };
 
