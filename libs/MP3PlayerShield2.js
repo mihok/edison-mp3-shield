@@ -205,6 +205,30 @@ Shield.prototype.setup = function () {
 
   this.reset()
     .then (function () {
+      return that.readRegister(SCI_MODE);
+    })
+    .then (function (MP3Mode) {
+      console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
+
+      return that.readRegister(SCI_STATUS);
+    })
+    .then (function (MP3Status) {
+      console.log('SCI_Status (0x48) = 0x' + MP3Status.toString('hex'));
+
+      return that.readRegister(SCI_CLOCKF);
+    })
+    .then (function (MP3Clock) {
+      console.log('SCI_ClockF = 0x' + MP3Clock.toString('hex'));
+
+      return that.writeRegister(SCI_CLOCKF, 0x6000, 0x00);
+    })
+    .delay(100)
+    .then (function () {
+      return that.readRegister(SCI_CLOCKF);
+    })
+    .then(function (MP3Clock) {
+      console.log('SCI_ClockF = 0x' + MP3Clock.toString('hex'));
+
       return that.setVolume(20, 20);
     });
 
