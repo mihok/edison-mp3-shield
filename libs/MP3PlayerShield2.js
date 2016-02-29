@@ -214,9 +214,9 @@ Shield.prototype.reset = function () {
   var that = this;
   var deferred = Promise.pending();
   // Reset
-  console.log('Debug:', this.Audio_Reset.write(LOW));
+  console.log('Debug:', 'RESET_LOW', this.Audio_Reset.write(LOW));
   setTimeout(function() {
-    console.log('Debug:', that.Audio_Reset.write(HIGH));
+    console.log('Debug:', 'RESET_HIGH', that.Audio_Reset.write(HIGH));
 
     deferred.resolve();
   }, 100);
