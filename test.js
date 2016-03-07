@@ -15,9 +15,9 @@ function callback(arg) {
 }
 */
 
-var callback = function(arg) {
+var callback = function() {
   interrupt++;
-  console.log(arg);
+  console.log(arguments);
 };
 
 var myled    = new m.Gpio(6);
@@ -25,7 +25,7 @@ myled.dir(m.DIR_OUT);
 
 var mybutton = new m.Gpio(2);
 mybutton.dir(m.DIR_IN);
-mybutton.isr(m.EDGE_BOTH, callback, argument);
+mybutton.isr(m.EDGE_BOTH, callback);
 
 function mainloop() {
   myled.write(led_state = led_state ? 0 : 1);
