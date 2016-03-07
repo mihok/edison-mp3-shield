@@ -20,7 +20,7 @@ var callback = function(arg) {
   console.log(arg);
 };
 
-var myled    = new m.Gpio(13);
+var myled    = new m.Gpio(6);
 myled.dir(m.DIR_OUT);
 
 var mybutton = new m.Gpio(2);
