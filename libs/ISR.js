@@ -35,3 +35,5 @@ ISR.prototype.handler = function () {
   this.emit('interrupt');
   this.fired = true;
 };
+
+module.exports = ISR;
