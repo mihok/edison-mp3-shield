@@ -96,11 +96,10 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte, callb
 
     console.log('Debug:', that.SPI.write(buffer));
 
-    that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-      console.log('MP3Shield:', 'Waiting for ISR ...');
+    console.log('MP3Shield:', 'Starting ISR ...', that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
       console.log('Debug:', that.Audio_CS.write(HIGH));
       callback();
-    });
+    }));
   }));
 };
 
@@ -108,12 +107,15 @@ Shield.prototype.readRegister = function (addressByte, callback) {
   var that = this;
   var firstResponse, secondResponse, result;
 
-  this.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-    that.Audio_CS.write(LOW);
+  console.log('MP3Shield:', 'Starting ISR ...', this.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
+    console.log('MP3Shield:', 'ISR!', arguments);
+    console.log('Debug:', that.Audio_CS.write(LOW));
 
     var buffer = new Buffer(2);
     buffer[0] = 0x03;
     buffer[1] = addressByte;
+
+    console.log('Reading ', buffer.toString('hex'));
 
     console.log('Debug:', that.SPI.write(buffer));
 
@@ -136,7 +138,7 @@ Shield.prototype.readRegister = function (addressByte, callback) {
         });
       });
     });
-  });
+  }));
 };
 
 Shield.prototype.setVolume  = function (left, right, callback) {
@@ -171,6 +173,7 @@ Shield.prototype.setup = function (callback) {
   this.Audio_DCS.write(HIGH);
 
   this.setVolume(20, 20, function () {
+    console.log('MP3Shield:', 'Reading SCI_MODE ...');
     that.readRegister(SCI_MODE , function (result) {
       MP3Mode = result;
       console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
