@@ -8,10 +8,9 @@ function ISR (gpio, mode) {
   this.fired = false;
   this.waiting = false;
 
-  this.gpio = new MRAA.Gpui(gpio || -1);
+  this.gpio = new MRAA.Gpio(gpio || -1);
   this.gpio.dir(MRAA.DIR_IN);
   this.gpio.isr(mode || MRAA.EDGE_BOTH, this.handler);
-
 
   EventEmitter.call(this);
 }
