@@ -6,7 +6,6 @@ var util = require('util');
 
 function ISR (gpio, mode) {
   this.fired = false;
-  this.waiting = false;
 
   this.gpio = new MRAA.Gpio(gpio || -1);
   this.gpio.dir(MRAA.DIR_IN);
@@ -16,20 +15,6 @@ function ISR (gpio, mode) {
 }
 
 util.inherits(ISR, EventEmitter);
-
-
-ISR.prototype.wait = function () {
-  // if (!this.waiting) {
-  //   this.waiting = true;
-  // }
-
-  if (this.fired) {
-    console.log('Debug:', 'ISR', 'INTERRUPT!');
-    this.fired = false;
-    return false;
-  }
-  return true;
-};
 
 ISR.prototype.handler = function () {
   var that = this;

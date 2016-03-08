@@ -1,4 +1,5 @@
 'use strict';
+var Promise = require("bluebird");
 var MRAA = require('mraa');
 var ISR = require('./ISR.js');
 
@@ -158,9 +159,9 @@ Shield.prototype.setup = function (callback) {
 
     that.setVolume(20, 20);
 
-    // console.log('MP3Shield:', 'Reading SCI_MODE ...');
-    // MP3Mode = this.readRegister(SCI_MODE);
-    // console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
+    console.log('MP3Shield:', 'Reading SCI_MODE ...');
+    MP3Mode = that.readRegister(SCI_MODE);
+    console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
 
     // console.log('MP3Shield:', 'Reading SCI_STATUS ...');
     // MP3Status = this.readRegister(SCI_STATUS);
