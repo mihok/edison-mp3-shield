@@ -10,7 +10,7 @@ function ISR (gpio, mode) {
 
   this.gpio = new MRAA.Gpio(gpio || -1);
   this.gpio.dir(MRAA.DIR_IN);
-  this.gpio.isr(mode || MRAA.EDGE_BOTH, this.handler);
+  this.gpio.isr(mode || MRAA.EDGE_BOTH, this.handler());
 
   EventEmitter.call(this);
 }
@@ -32,8 +32,11 @@ ISR.prototype.wait = function () {
 };
 
 ISR.prototype.handler = function () {
-  this.emit('interrupt');
-  this.fired = true;
+  var that = this;
+  return function () {
+    that.emit('interrupt');
+    that.fired = true;
+  };
 };
 
 module.exports = ISR;
