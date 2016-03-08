@@ -157,7 +157,7 @@ Shield.prototype.setup = function (callback) {
   // Reset
   console.log('Debug:', this.Audio_Reset.write(LOW));
   setTimeout(function() {
-    console.log('Debug:', this.Audio_Reset.write(HIGH));
+    console.log('Debug:', that.Audio_Reset.write(HIGH));
   }, 100);
 
   console.log('Debug:', this.SPI.write(new Buffer(0xFF)));
