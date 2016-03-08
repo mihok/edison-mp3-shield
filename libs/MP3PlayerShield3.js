@@ -1,9 +1,10 @@
 'use strict';
 var MRAA = require('mraa');
+var ISR = require('./ISR.js');
 
 // DATA ////////////////////////////////////////////////////////////////////////
 
-var helloMP3 = require('./sample');
+var helloMP3 = require('./sample.js');
 
 
 // GPIO Pins ///////////////////////////////////////////////////////////////////
@@ -46,6 +47,8 @@ var SCI_AICTRL2 = 0x0E;
 var SCI_AICTRL3 = 0x0F;
 
 
+// Constructor
+
 function Shield (options) {
   console.log('MP3Shield:', 'MRAA Version', MRAA.getVersion());
 
@@ -53,8 +56,7 @@ function Shield (options) {
 
   // VS1053
   console.log('MP3Shield:', 'Initalizing VS1053 data request interrupt ..');
-  this.Audio_DREQ = new MRAA.Gpio(AUDIO_DREQ);
-  this.Audio_DREQ.dir(MRAA.DIR_IN);
+  this.Audio_DREQ = new ISR(AUDIO_DREQ, MRAA.EDGE_RISING);
 
   console.log('MP3Shield:', 'Initalizing VS1053 chip select input ..');
   this.Audio_CS = new MRAA.Gpio(AUDIO_CS);
@@ -78,72 +80,55 @@ function Shield (options) {
   this.SPI = new MRAA.Spi(SPI_DEFAULT);
 }
 
-Shield.prototype.writeRegister = function (addressByte, highByte, lowByte, callback) {
-  var that = this;
+Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
+  while(this.Audio_DREQ.wait())
 
+  console.log('Debug:', 'AUDIO_CS', LOW, this.Audio_CS.write(LOW));
 
-  console.log('MP3Shield:', 'Starting ISR ...', this.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-    console.log('MP3Shield:', 'ISR!', arguments);
-    console.log('Debug:', that.Audio_CS.write(LOW));
+  var buffer = new Buffer(4);
+  buffer[0] = 0x02;
+  buffer[1] = addressByte;
+  buffer[2] = highByte;
+  buffer[3] = lowByte;
 
-    var buffer = new Buffer(4);
-    buffer[0] = 0x02;
-    buffer[1] = addressByte;
-    buffer[2] = highByte;
-    buffer[3] = lowByte;
+  console.log('Debug:', 'SPI', buffer, this.SPI.write(buffer));
 
-    console.log('Writing ', buffer.toString('hex'));
+  while(this.Audio_DREQ.wait())
 
-    console.log('Debug:', that.SPI.write(buffer));
-
-    console.log('MP3Shield:', 'Starting ISR ...', that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-      console.log('Debug:', that.Audio_CS.write(HIGH));
-      callback();
-    }));
-  }));
+  console.log('Debug:', 'AUDIO_CS', HIGH, this.Audio_CS.write(HIGH));
 };
 
-Shield.prototype.readRegister = function (addressByte, callback) {
-  var that = this;
+Shield.prototype.readRegister = function (addressByte) {
   var firstResponse, secondResponse, result;
 
-  console.log('MP3Shield:', 'Starting ISR ...', this.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-    console.log('MP3Shield:', 'ISR!', arguments);
-    console.log('Debug:', that.Audio_CS.write(LOW));
+  while(this.Audio_DREQ.wait())
 
-    var buffer = new Buffer(2);
-    buffer[0] = 0x03;
-    buffer[1] = addressByte;
+  console.log('Debug:', 'AUDIO_CS', LOW, this.Audio_CS.write(LOW));
 
-    console.log('Reading ', buffer.toString('hex'));
+  var buffer = new Buffer(4);
+  buffer[0] = 0x03;
+  buffer[1] = addressByte;
 
-    console.log('Debug:', that.SPI.write(buffer));
+  console.log('Debug:', 'SPI', buffer, this.SPI.write(buffer));
 
-    firstResponse = that.SPI.write(0xFF);
-    that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-      secondResponse = that.SPI.write(0xFF);
+  firstResponse = this.SPI.write(new Buffer (0xFF));
 
-      that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-        that.Audio_CS.write(HIGH);
+  while(this.Audio_DREQ.wait())
 
-        console.log('Debug:', firstResponse.toString('hex'));
-        console.log('Debug:', secondResponse.toString('hex'));
+  secondResponse = this.SPI.write(new Buffer (0xFF));
 
-        result = firstResponse << 8 | secondResponse;
+  while(this.Audio_DREQ.wait())
 
-        console.log('Debug:', result.toString('hex'));
+  console.log('Debug:', 'AUDIO_CS', HIGH, this.Audio_CS.write(HIGH));
 
-        that.Audio_DREQ.isr(MRAA.EDGE_RISING, function () {
-          callback(result);
-        });
-      });
-    });
-  }));
+  result = firstResponse << 8 | secondResponse;
+
+  return result;
 };
 
-Shield.prototype.setVolume  = function (left, right, callback) {
+Shield.prototype.setVolume  = function (left, right) {
   console.log('MP3Shield:', 'Setting volume to', left, 'L ', right, 'R');
-  this.writeRegister(SCI_VOL, left, right, callback);
+  this.writeRegister(SCI_VOL, left, right);
 };
 
 Shield.prototype.setup = function (callback) {
@@ -159,50 +144,40 @@ Shield.prototype.setup = function (callback) {
   console.log('Debug:', this.SPI.frequency(process.env.FREQ || 1000000));
 
   // Reset
-  console.log('Debug:', this.Audio_Reset.write(LOW));
+  console.log('Debug:', 'AUDIO_RST', LOW, this.Audio_Reset.write(LOW));
   setTimeout(function() {
-    console.log('Debug:', that.Audio_Reset.write(HIGH));
+    console.log('Debug:', 'AUDIO_RST', HIGH, this.Audio_Reset.write(HIGH));
   }, 100);
 
   console.log('Debug:', this.SPI.write(new Buffer(0xFF)));
 
   // De-select Control
-  this.Audio_CS.write(HIGH);
+  console.log('Debug:', 'AUDIO_CS', HIGH, this.Audio_CS.write(HIGH));
 
   // De-select Data
-  this.Audio_DCS.write(HIGH);
+  console.log('Debug:', 'AUDIO_DCS', HIGH, this.Audio_DCS.write(HIGH));
 
-  this.setVolume(20, 20, function () {
-    console.log('MP3Shield:', 'Reading SCI_MODE ...');
-    that.readRegister(SCI_MODE , function (result) {
-      MP3Mode = result;
-      console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
-    });
+  this.setVolume(20, 20);
 
-    console.log('MP3Shield:', 'Reading SCI_STATUS ...');
-    that.readRegister(SCI_STATUS, function (result) {
-      MP3Status = result;
-      VSVersion = (MP3Status >> 4) & 0x000F;
-      console.log('MP3Shield:', 'VSx version ', VSVersion.toString('hex'));
+  console.log('MP3Shield:', 'Reading SCI_MODE ...');
+  MP3Mode = this.readRegister(SCI_MODE);
+  console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
 
-    });
+  console.log('MP3Shield:', 'Reading SCI_STATUS ...');
+  MP3Status = this.readRegister(SCI_STATUS);
+  console.log('MP3Shield:', 'VSx version ', VSVersion.toString('hex'));
 
-    console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
-    that.readRegister(SCI_CLOCKF, function (result) {
-      MP3Clock = result;
+  console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
+  MP3Clock = this.readRegister(SCI_CLOCKF);
+  console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString('hex'));
+  console.log('MP3Shield:', 'Setting SCI_CLOCKF to 4MHz ... ');
+  this.SPI.frequency(4000000);
+  console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
+  MP3Clock = this.readRegister(SCI_CLOCKF);
+  console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString('hex'));
 
-      that.writeRegister(SCI_CLOCKF, 0x60, 0x00, function () {
-        that.SPI.frequency(4000000);
 
-        that.readRegister(SCI_CLOCKF, function (result) {
-          MP3Clock = result;
-          console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString('hex'));
-
-          callback.call(that);
-        });
-      });
-    });
-  });
+  console.log('FUCK YEAH SUCCESS!!!!');
 };
 
 module.exports = Shield;
