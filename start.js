@@ -1,5 +1,5 @@
 // var Edison = require('./libs/EdisonArduinoBreakout')
-var MP3Shield = require('./libs/MP3PlayerShield');
+var MP3Shield = require('./libs/MP3PlayerShield3');
 
 var wave = new MP3Shield();
 var loop = function () {
