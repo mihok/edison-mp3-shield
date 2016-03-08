@@ -148,15 +148,15 @@ Shield.prototype.setup = function (callback) {
   setTimeout(function() {
     console.log('Debug:', 'AUDIO_RST', HIGH, that.Audio_Reset.write(HIGH));
 
-    console.log('Debug:', this.SPI.write(new Buffer(0xFF)));
+    console.log('Debug:', that.SPI.write(new Buffer(0xFF)));
 
     // De-select Control
-    console.log('Debug:', 'AUDIO_CS', HIGH, this.Audio_CS.write(HIGH));
+    console.log('Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
 
     // De-select Data
-    console.log('Debug:', 'AUDIO_DCS', HIGH, this.Audio_DCS.write(HIGH));
+    console.log('Debug:', 'AUDIO_DCS', HIGH, that.Audio_DCS.write(HIGH));
 
-    this.setVolume(20, 20);
+    that.setVolume(20, 20);
 
     // console.log('MP3Shield:', 'Reading SCI_MODE ...');
     // MP3Mode = this.readRegister(SCI_MODE);
