@@ -34,8 +34,10 @@ ISR.prototype.wait = function () {
 ISR.prototype.handler = function () {
   var that = this;
   return function () {
-    that.emit('interrupt');
+    console.log('Debug:', 'ISR', 'INTERRUPT!');
     that.fired = true;
+    that.emit('interrupt');
+    that.fired = false;
   };
 };
 
