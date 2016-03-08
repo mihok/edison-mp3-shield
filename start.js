@@ -2,9 +2,13 @@
 var MP3Shield = require('./libs/MP3PlayerShield2');
 
 var wave = new MP3Shield();
-wave.setup();
-// var EXIT = 0;
+var loop = function () {
+  console.log('PING PONG');
+  setTimeout(loop, 1000);
+};
 
+wave.setup();
+loop();
 // var EXIT_timeout = function () {
 //   EXIT = 1;
 // };
