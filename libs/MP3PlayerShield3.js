@@ -179,6 +179,7 @@ Shield.prototype.setup = function (callback) {
       console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
     });
 
+    console.log('MP3Shield:', 'Reading SCI_STATUS ...');
     that.readRegister(SCI_STATUS, function (result) {
       MP3Status = result;
       VSVersion = (MP3Status >> 4) & 0x000F;
@@ -186,6 +187,7 @@ Shield.prototype.setup = function (callback) {
 
     });
 
+    console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
     that.readRegister(SCI_CLOCKF, function (result) {
       MP3Clock = result;
 
