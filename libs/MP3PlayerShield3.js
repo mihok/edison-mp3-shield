@@ -161,15 +161,15 @@ Shield.prototype.setup = function (callback) {
 
     console.log('MP3Shield:', 'Reading SCI_MODE ...');
     MP3Mode = that.readRegister(SCI_MODE);
-    console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
+    console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString(16));
 
     // console.log('MP3Shield:', 'Reading SCI_STATUS ...');
     // MP3Status = this.readRegister(SCI_STATUS);
-    // console.log('MP3Shield:', 'VSx version ', VSVersion.toString('hex'));
+    // console.log('MP3Shield:', 'VSx version ', VSVersion.toString(10));
 
     // console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
     // MP3Clock = this.readRegister(SCI_CLOCKF);
-    // console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString('hex'));
+    // console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString(16));
     // console.log('MP3Shield:', 'Setting SCI_CLOCKF to 4MHz ... ');
     // this.SPI.frequency(4000000);
     // console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
