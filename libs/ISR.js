@@ -24,6 +24,7 @@ ISR.prototype.wait = function () {
   // }
 
   if (this.fired) {
+    console.log('Debug:', 'ISR', 'INTERRUPT!');
     this.fired = false;
     return false;
   }

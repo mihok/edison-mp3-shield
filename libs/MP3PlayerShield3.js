@@ -81,7 +81,7 @@ function Shield (options) {
 }
 
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
-  while(this.Audio_DREQ.wait())
+  while(this.Audio_DREQ.wait()) {}
 
   console.log('Debug:', 'AUDIO_CS', LOW, this.Audio_CS.write(LOW));
 
@@ -93,7 +93,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
 
   console.log('Debug:', 'SPI', buffer, this.SPI.write(buffer));
 
-  while(this.Audio_DREQ.wait())
+  while(this.Audio_DREQ.wait()) {}
 
   console.log('Debug:', 'AUDIO_CS', HIGH, this.Audio_CS.write(HIGH));
 };
@@ -101,7 +101,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
 Shield.prototype.readRegister = function (addressByte) {
   var firstResponse, secondResponse, result;
 
-  while(this.Audio_DREQ.wait())
+  while(this.Audio_DREQ.wait()) {}
 
   console.log('Debug:', 'AUDIO_CS', LOW, this.Audio_CS.write(LOW));
 
@@ -113,11 +113,11 @@ Shield.prototype.readRegister = function (addressByte) {
 
   firstResponse = this.SPI.write(new Buffer (0xFF));
 
-  while(this.Audio_DREQ.wait())
+  while(this.Audio_DREQ.wait()) {}
 
   secondResponse = this.SPI.write(new Buffer (0xFF));
 
-  while(this.Audio_DREQ.wait())
+  while(this.Audio_DREQ.wait()) {}
 
   console.log('Debug:', 'AUDIO_CS', HIGH, this.Audio_CS.write(HIGH));
 
