@@ -157,7 +157,7 @@ Shield.prototype.readRegister = function (addressByte) {
 
 Shield.prototype.setVolume  = function (left, right) {
   console.log('MP3Shield:', 'Setting volume to', left, 'L ', right, 'R');
-  this.writeRegister(SCI_VOL, left, right);
+  return this.writeRegister(SCI_VOL, left, right);
 };
 
 Shield.prototype.setup = function (callback) {
