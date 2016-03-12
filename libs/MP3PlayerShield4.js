@@ -94,7 +94,9 @@ function Shield (options) {
 
 
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
-  while (!this.interrupted) { }
+  while (!this.interrupted) {
+    console.log('Debug:', 'W1', new Date(), this.interrupted);
+  }
 
   console.log('Debug:', this.Audio_CS.write(LOW));
 
@@ -108,7 +110,9 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
 
   console.log('Debug:', this.SPI.write(buffer));
 
-  while (!this.interrupted) { }
+  while (!this.interrupted) {
+    console.log('Debug:', 'W2', new Date(), this.interrupted);
+  }
 
   console.log('Debug:', this.Audio_CS.write(HIGH));
 };
