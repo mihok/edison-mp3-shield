@@ -199,7 +199,7 @@ Shield.prototype.setup = function (callback) {
   console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
   MP3Clock = that.readRegister(SCI_CLOCKF);
 
-  that.writeRegister(SCI_CLOCKF, 0x60, 0x00));
+  that.writeRegister(SCI_CLOCKF, 0x60, 0x00);
   that.SPI.frequency(4000000);
 
   MP3Clock = that.readRegister(SCI_CLOCKF);
