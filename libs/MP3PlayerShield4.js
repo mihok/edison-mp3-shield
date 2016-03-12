@@ -69,6 +69,10 @@ function Shield (options) {
     }, 100);
   });
 
+  this.Audio_DREQ.isInterrupted = function () {
+    return this.interrupted;
+  };
+
   console.log('MP3Shield:', 'Initalizing VS1053 chip select input ..');
   this.Audio_CS = new MRAA.Gpio(AUDIO_CS);
   this.Audio_CS.dir(MRAA.DIR_OUT);
@@ -92,10 +96,9 @@ function Shield (options) {
 }
 
 
-
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
   while (!this.interrupted) {
-    console.log('Debug:', 'W1', new Date(), this.interrupted);
+    console.log('Debug:', 'W1', this.Audio_DREQ.isInterrupted());
   }
 
   console.log('Debug:', this.Audio_CS.write(LOW));
@@ -111,7 +114,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
   console.log('Debug:', this.SPI.write(buffer));
 
   while (!this.interrupted) {
-    console.log('Debug:', 'W2', new Date(), this.interrupted);
+    console.log('Debug:', 'W2', this.interrupted);
   }
 
   console.log('Debug:', this.Audio_CS.write(HIGH));
