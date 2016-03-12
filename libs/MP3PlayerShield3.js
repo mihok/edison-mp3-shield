@@ -84,6 +84,8 @@ function Shield (options) {
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
   var that = this;
 
+  console.log('Debug:', this);
+
   return this.ISR.once('interrupt', function () {
       var defferred = Promise.pending();
 
@@ -155,7 +157,7 @@ Shield.prototype.readRegister = function (addressByte) {
 };
 
 Shield.prototype.setVolume  = function (left, right) {
-  console.log('MP3Shield:', 'Setting volume to', left, 'L ', right, 'R');
+  console.log('MP3Shield:', 'Setting volume to', left, 'L ', right, 'R', this);
   this.writeRegister.call(this, SCI_VOL, left, right);
 };
 
