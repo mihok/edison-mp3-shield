@@ -180,37 +180,31 @@ Shield.prototype.setup = function (callback) {
   // De-select Data
   this.Audio_DCS.write(HIGH);
 
-  this.setVolume(20, 20, function () {
-    console.log('MP3Shield:', 'Reading SCI_MODE ...');
-    that.readRegister(SCI_MODE , function (result) {
-      MP3Mode = result;
-      console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
-    });
+  this.setVolume(20, 20);
 
-    console.log('MP3Shield:', 'Reading SCI_STATUS ...');
-    that.readRegister(SCI_STATUS, function (result) {
-      MP3Status = result;
-      VSVersion = (MP3Status >> 4) & 0x000F;
-      console.log('MP3Shield:', 'VSx version ', VSVersion.toString('hex'));
+  console.log('MP3Shield:', 'Reading SCI_MODE ...');
+  MP3Mode = that.readRegister(SCI_MODE);
 
-    });
+  console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString('hex'));
 
-    console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
-    that.readRegister(SCI_CLOCKF, function (result) {
-      MP3Clock = result;
 
-      that.writeRegister(SCI_CLOCKF, 0x60, 0x00, function () {
-        that.SPI.frequency(4000000);
+  console.log('MP3Shield:', 'Reading SCI_STATUS ...');
+  MP3Status = that.readRegister(SCI_STATUS);
 
-        that.readRegister(SCI_CLOCKF, function (result) {
-          MP3Clock = result;
-          console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString('hex'));
+  VSVersion = (MP3Status >> 4) & 0x000F;
 
-          callback.call(that);
-        });
-      });
-    });
-  });
+  console.log('MP3Shield:', 'VSx version ', VSVersion.toString('hex'));
+
+
+  console.log('MP3Shield:', 'Reading SCI_CLOCKF ...');
+  MP3Clock = that.readRegister(SCI_CLOCKF);
+
+  that.writeRegister(SCI_CLOCKF, 0x60, 0x00));
+  that.SPI.frequency(4000000);
+
+  MP3Clock = that.readRegister(SCI_CLOCKF);
+
+  console.log('MP3Shield:', 'SCI_ClockF = 0x' + MP3Clock.toString('hex'));
 };
 
 module.exports = Shield;
