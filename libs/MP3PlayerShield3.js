@@ -87,13 +87,8 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
 
   return this.Audio_DREQ.once('interrupt')
     .then(function () {
-      var defferred = Promise.pending();
-
       console.log('Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
 
-      return defferred.promise;
-    })
-    .then(function () {
       var buffer = new Buffer(4);
 
       buffer[0] = 0x02;
@@ -106,11 +101,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
       return that.Audio_DREQ.once('interrupt');
     })
     .then(function () {
-      var defferred = Promise.pending();
-
       console.log('Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
-
-      return defferred.promise;
     });
 };
 
@@ -121,8 +112,7 @@ Shield.prototype.readRegister = function (addressByte) {
   return this.Audio_DREQ.once('interrupt')
     .then(function () {
       console.log('Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
-    })
-    .then(function () {
+
       var buffer = new Buffer(4);
 
       buffer[0] = 0x03;
