@@ -120,15 +120,11 @@ Shield.prototype.readRegister = function (addressByte) {
 
   return this.Audio_DREQ.once('interrupt')
     .then(function () {
-      var defferred = Promise.pending();
-
       console.log('Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
-
-      return defferred.promise;
     })
     .then(function () {
-
       var buffer = new Buffer(4);
+
       buffer[0] = 0x03;
       buffer[1] = addressByte;
 
@@ -136,24 +132,25 @@ Shield.prototype.readRegister = function (addressByte) {
 
       firstResponse = that.SPI.write(new Buffer (0xFF));
 
+      console.log('Debug:', 'SPI Response(1)', firstResponse);
+
       return that.Audio_DREQ.once('interrupt');
     })
     .then(function () {
-      var defferred = Promise.pending();
-
       secondResponse = that.SPI.write(new Buffer (0xFF));
 
-      return defferred.promise;
+      console.log('Debug:', 'SPI Response(2)', secondResponse);
+
+      return that.Audio_DREQ.once('interrupt');
     })
     .then (function () {
-      var defferred = Promise.pending();
-
       console.log('Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
 
-      return defferred.promise;
+      result = firstResponse << 8 | secondResponse;
+
+      return that.Audio_DREQ.once('interrupt');
     })
     .then (function () {
-      result = firstResponse << 8 | secondResponse;
 
       return result;
     });
