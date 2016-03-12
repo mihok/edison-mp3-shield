@@ -184,10 +184,10 @@ Shield.prototype.setup = function (callback) {
     // De-select Data
     console.log('Debug:', 'AUDIO_DCS', HIGH, that.Audio_DCS.write(HIGH));
 
-    that.setVolume(20, 20);
+    that.setVolume.call(that, 20, 20);
 
     console.log('MP3Shield:', 'Reading SCI_MODE ...');
-    that.readRegister(SCI_MODE)
+    that.readRegister.call(that, SCI_MODE)
       .then(function (result) {
         MP3Mode = result;
         console.log('MP3Shield:', 'SCI_Mode (0x4800) = 0x' + MP3Mode.toString(16));
