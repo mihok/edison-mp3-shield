@@ -1,13 +1,8 @@
 'use strict';
 var MRAA = require('mraa');
-var Promise = require('bluebird');
 var EventEmitter = require('events');
 
 var util = require('util');
-
-
-
-Promise.promisifyAll(EventEmitter.prototype);
 
 function ISR (gpio, mode) {
   this.fired = false;

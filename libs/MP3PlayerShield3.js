@@ -58,6 +58,7 @@ function Shield (options) {
   // VS1053
   console.log('MP3Shield:', 'Initalizing VS1053 data request interrupt ..');
   this.Audio_DREQ = new ISR(AUDIO_DREQ, MRAA.EDGE_RISING);
+  this.Audio_DREQ.once = Promise.promisify(this.Audio_DREQ.once);
 
   console.log('MP3Shield:', 'Initalizing VS1053 chip select input ..');
   this.Audio_CS = new MRAA.Gpio(AUDIO_CS);
