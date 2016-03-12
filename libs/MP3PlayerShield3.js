@@ -87,7 +87,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
   return this.ISR.once('interrupt', function () {
       var defferred = Promise.pending();
 
-      console.log('Debug:', 'AUDIO_CS', LOW, this.Audio_CS.write(LOW));
+      console.log('Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
 
       return defferred.promise;
     })
@@ -99,12 +99,12 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
       buffer[2] = highByte;
       buffer[3] = lowByte;
 
-      console.log('Debug:', 'SPI', buffer, this.SPI.write(buffer));
+      console.log('Debug:', 'SPI', buffer, that.SPI.write(buffer));
 
       return that.ISR.once('interrupt', function () {
         var defferred = Promise.pending();
 
-        console.log('Debug:', 'AUDIO_CS', HIGH, this.Audio_CS.write(HIGH));
+        console.log('Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
 
         return defferred.promise;
       });
@@ -135,7 +135,7 @@ Shield.prototype.readRegister = function (addressByte) {
       return that.ISR.once('interrupt', function () {
         var defferred = Promise.pending();
 
-        secondResponse = this.SPI.write(new Buffer (0xFF));
+        secondResponse = that.SPI.write(new Buffer (0xFF));
 
         return defferred.promise;
       });
@@ -143,7 +143,7 @@ Shield.prototype.readRegister = function (addressByte) {
     .then (function () {
       var defferred = Promise.pending();
 
-      console.log('Debug:', 'AUDIO_CS', HIGH, this.Audio_CS.write(HIGH));
+      console.log('Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
 
       return defferred.promise;
     })
@@ -156,7 +156,7 @@ Shield.prototype.readRegister = function (addressByte) {
 
 Shield.prototype.setVolume  = function (left, right) {
   console.log('MP3Shield:', 'Setting volume to', left, 'L ', right, 'R');
-  this.writeRegister(SCI_VOL, left, right);
+  this.writeRegister.call(this, SCI_VOL, left, right);
 };
 
 Shield.prototype.setup = function (callback) {
