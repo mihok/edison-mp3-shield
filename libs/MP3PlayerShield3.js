@@ -85,7 +85,8 @@ function Shield (options) {
 Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
   var that = this;
 
-  return this.Audio_DREQ.once('interrupt', function () {
+  return this.Audio_DREQ.once('interrupt')
+    .then(function () {
       var defferred = Promise.pending();
 
       console.log('Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
@@ -102,13 +103,14 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
 
       console.log('Debug:', 'SPI', buffer, that.SPI.write(buffer));
 
-      return that.Audio_DREQ.once('interrupt', function () {
-        var defferred = Promise.pending();
+      return that.Audio_DREQ.once('interrupt');
+    })
+    .then(function () {
+      var defferred = Promise.pending();
 
-        console.log('Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
+      console.log('Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
 
-        return defferred.promise;
-      });
+      return defferred.promise;
     });
 };
 
@@ -116,7 +118,8 @@ Shield.prototype.readRegister = function (addressByte) {
   var firstResponse, secondResponse, result;
   var that = this;
 
-  return this.Audio_DREQ.once('interrupt', function () {
+  return this.Audio_DREQ.once('interrupt')
+    .then(function () {
       var defferred = Promise.pending();
 
       console.log('Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
@@ -133,13 +136,14 @@ Shield.prototype.readRegister = function (addressByte) {
 
       firstResponse = that.SPI.write(new Buffer (0xFF));
 
-      return that.Audio_DREQ.once('interrupt', function () {
-        var defferred = Promise.pending();
+      return that.Audio_DREQ.once('interrupt');
+    })
+    .then(function () {
+      var defferred = Promise.pending();
 
-        secondResponse = that.SPI.write(new Buffer (0xFF));
+      secondResponse = that.SPI.write(new Buffer (0xFF));
 
-        return defferred.promise;
-      });
+      return defferred.promise;
     })
     .then (function () {
       var defferred = Promise.pending();
