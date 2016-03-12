@@ -70,7 +70,7 @@ function Shield (options) {
   });
 
   this.Audio_DREQ.isInterrupted = function () {
-    return this.interrupted;
+    return that.interrupted;
   };
 
   console.log('MP3Shield:', 'Initalizing VS1053 chip select input ..');
