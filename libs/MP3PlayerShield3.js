@@ -138,10 +138,6 @@ Shield.prototype.readRegister = function (addressByte) {
 
       result = firstResponse << 8 | secondResponse;
 
-      return that.Audio_DREQ.once('interrupt');
-    })
-    .then (function () {
-
       return result;
     });
 };
