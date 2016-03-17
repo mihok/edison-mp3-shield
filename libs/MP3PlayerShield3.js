@@ -174,12 +174,12 @@ Shield.prototype.setup = function (callback) {
     // De-select Data
     console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_DCS', HIGH, that.Audio_DCS.write(HIGH));
 
-    that.setVolume.call(that, 20, 20)
-      .then(function () {
-        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_CLOCKF ...');
+    // that.setVolume.call(that, 20, 20)
+    //   .then(function () {
+    console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_CLOCKF ...');
 
-        return that.readRegister.call(that, SCI_CLOCKF);
-      })
+    that.readRegister.call(that, SCI_CLOCKF)
+      // })
       .then(function (result) {
         MP3Clock = result;
         console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_CLOCKF = 0x' + MP3Clock.toString(16));
