@@ -162,31 +162,31 @@ Shield.prototype.setup = function (callback) {
   console.log('[' + Util.unixtime() + ']', 'Debug:', this.SPI.frequency(process.env.FREQ || 1000000));
 
   // Reset
-  console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_RST', LOW, this.Audio_Reset.write(LOW));
-  setTimeout(function() {
-    console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_RST', HIGH, that.Audio_Reset.write(HIGH));
+  // console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_RST', LOW, this.Audio_Reset.write(LOW));
+  // setTimeout(function() {
+  //   console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_RST', HIGH, that.Audio_Reset.write(HIGH));
 
-    console.log('[' + Util.unixtime() + ']', 'Debug:', that.SPI.write(new Buffer(0xFF)));
+  console.log('[' + Util.unixtime() + ']', 'Debug:', that.SPI.write(new Buffer(0xFF)));
 
-    // De-select Control
-    console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
+  // De-select Control
+  console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
 
-    // De-select Data
-    console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_DCS', HIGH, that.Audio_DCS.write(HIGH));
+  // De-select Data
+  console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_DCS', HIGH, that.Audio_DCS.write(HIGH));
 
-    that.setVolume.call(that, 20, 20)
-      .then(function () {
-        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_MODE ...');
+  that.setVolume.call(that, 20, 20)
+    .then(function () {
+      console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_MODE ...');
 
-        return that.readRegister.call(that, SCI_MODE);
-      })
-      .then(function (result) {
-        MP3Mode = result;
-        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_MODE (0x4800) = 0x' + MP3Mode.toString(16));
-      })
-      .catch(function (err) {
-        console.error('[' + Util.unixtime() + ']', 'Error:', 'Something went wrong!', arguments);
-      });
+      return that.readRegister.call(that, SCI_MODE);
+    })
+    .then(function (result) {
+      MP3Mode = result;
+      console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_MODE (0x4800) = 0x' + MP3Mode.toString(16));
+    })
+    .catch(function (err) {
+      console.error('[' + Util.unixtime() + ']', 'Error:', 'Something went wrong!', arguments);
+    });
 
 
 
@@ -205,7 +205,7 @@ Shield.prototype.setup = function (callback) {
 
 
     // console.log('FUCK YEAH SUCCESS!!!!');
-  }, 100);
+  // }, 100);
 };
 
 module.exports = Shield;
