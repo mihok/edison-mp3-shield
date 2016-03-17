@@ -1,6 +1,6 @@
 
 var unixtime = function () {
-  return Math.round(Date.now()/1000, 10);
+  return parseFloat(Date.now()/1000, 10).toFixed(5);
 };
 
 module.exports = {
