@@ -176,13 +176,13 @@ Shield.prototype.setup = function (callback) {
 
     // that.setVolume.call(that, 20, 20)
     //   .then(function () {
-    console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_CLOCKF ...');
+    console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_MODE ...');
 
-    that.readRegister.call(that, SCI_CLOCKF)
+    that.readRegister.call(that, SCI_MODE)
       // })
       .then(function (result) {
         MP3Clock = result;
-        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_CLOCKF = 0x' + MP3Clock.toString(16));
+        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_MODE = 0x' + MP3Clock.toString(16));
       })
       .catch(function (err) {
         console.error('[' + Util.unixtime() + ']', 'Error:', 'Something went wrong!', arguments);
