@@ -209,7 +209,7 @@ Shield.prototype.setup = function (callback) {
 
 
     // console.log('FUCK YEAH SUCCESS!!!!');
-  }, 100);
+  // }, 100);
 };
 
 module.exports = Shield;
