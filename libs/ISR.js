@@ -19,7 +19,7 @@ util.inherits(ISR, EventEmitter);
 ISR.prototype.handler = function () {
   var that = this;
   return function () {
-    console.log('Debug:', 'ISR', 'INTERRUPT!', arguments);
+    console.log('[' + (Date.now()/1000). + ']', 'Debug:', 'ISR', 'INTERRUPT!', arguments);
     that.fired = true;
     that.emit('interrupt');
     that.fired = false;
