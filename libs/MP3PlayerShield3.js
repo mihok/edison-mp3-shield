@@ -3,6 +3,8 @@ var Promise = require("bluebird");
 var MRAA = require('mraa');
 var ISR = require('./ISR.js');
 
+var Util = require('./util.js');
+
 // DATA ////////////////////////////////////////////////////////////////////////
 
 var helloMP3 = require('./sample.js');
@@ -51,34 +53,34 @@ var SCI_AICTRL3 = 0x0F;
 // Constructor
 
 function Shield (options) {
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'MRAA Version', MRAA.getVersion());
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'MRAA Version', MRAA.getVersion());
 
   // GPIO
 
   // VS1053
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Initalizing VS1053 data request interrupt ..');
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Initalizing VS1053 data request interrupt ..');
   this.Audio_DREQ = new ISR(AUDIO_DREQ);
   this.Audio_DREQ.once = Promise.promisify(this.Audio_DREQ.once);
 
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Initalizing VS1053 chip select input ..');
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Initalizing VS1053 chip select input ..');
   this.Audio_CS = new MRAA.Gpio(AUDIO_CS);
   this.Audio_CS.dir(MRAA.DIR_OUT);
 
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Initalizing VS1053 data chip select input ..');
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Initalizing VS1053 data chip select input ..');
   this.Audio_DCS = new MRAA.Gpio(AUDIO_DCS);
   this.Audio_DCS.dir(MRAA.DIR_OUT);
 
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Initalizing VS1053 reset input ..');
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Initalizing VS1053 reset input ..');
   this.Audio_Reset = new MRAA.Gpio(AUDIO_RST);
   this.Audio_Reset.dir(MRAA.DIR_OUT);
 
   // SD
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Initalizing SD chip select input ..');
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Initalizing SD chip select input ..');
   this.SD_CS = new MRAA.Gpio(SD_CS);
 
   // Seems as though you only need to initialize SPI once, not all 3/4
   //  separately
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Initalizing SPI ..');
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Initalizing SPI ..');
   this.SPI = new MRAA.Spi(SPI_DEFAULT);
 }
 
@@ -87,7 +89,7 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
 
   return this.Audio_DREQ.once('interrupt')
     .then(function () {
-      console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
+      console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
 
       var buffer = new Buffer(4);
 
@@ -96,12 +98,12 @@ Shield.prototype.writeRegister = function (addressByte, highByte, lowByte) {
       buffer[2] = highByte;
       buffer[3] = lowByte;
 
-      console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'SPI', buffer, that.SPI.write(buffer));
+      console.log('[' + Util.unixtime() + ']', 'Debug:', 'SPI', buffer, that.SPI.write(buffer));
 
       return that.Audio_DREQ.once('interrupt');
     })
     .then(function () {
-      console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
+      console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
     });
 };
 
@@ -111,30 +113,30 @@ Shield.prototype.readRegister = function (addressByte) {
 
   return this.Audio_DREQ.once('interrupt')
     .then(function () {
-      console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
+      console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_CS', LOW, that.Audio_CS.write(LOW));
 
       var buffer = new Buffer(4);
 
       buffer[0] = 0x03;
       buffer[1] = addressByte;
 
-      console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'SPI', buffer, that.SPI.write(buffer));
+      console.log('[' + Util.unixtime() + ']', 'Debug:', 'SPI', buffer, that.SPI.write(buffer));
 
       firstResponse = that.SPI.write(new Buffer (0xFF));
 
-      console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'SPI Response(1)', firstResponse);
+      console.log('[' + Util.unixtime() + ']', 'Debug:', 'SPI Response(1)', firstResponse);
 
       return that.Audio_DREQ.once('interrupt');
     })
     .then(function () {
       secondResponse = that.SPI.write(new Buffer (0xFF));
 
-      console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'SPI Response(2)', secondResponse);
+      console.log('[' + Util.unixtime() + ']', 'Debug:', 'SPI Response(2)', secondResponse);
 
       return that.Audio_DREQ.once('interrupt');
     })
     .then (function () {
-      console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
+      console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
 
       result = firstResponse << 8 | secondResponse;
 
@@ -143,7 +145,7 @@ Shield.prototype.readRegister = function (addressByte) {
 };
 
 Shield.prototype.setVolume  = function (left, right) {
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Setting volume to', left, 'L ', right, 'R');
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Setting volume to', left, 'L ', right, 'R');
   return this.writeRegister(SCI_VOL, left, right);
 };
 
@@ -152,38 +154,38 @@ Shield.prototype.setup = function (callback) {
   var that = this;
 
   // Setup SPI for VS1053
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Writing SPI LSB transmission mode 0 (MSB)');
-  console.log('[' + (Date.now()/1000) + ']', 'Debug:', this.SPI.lsbmode(false));
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Writing SPI mode 0');
-  console.log('[' + (Date.now()/1000) + ']', 'Debug:', this.SPI.mode(0));
-  console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Setting clock to 1MHz');
-  console.log('[' + (Date.now()/1000) + ']', 'Debug:', this.SPI.frequency(process.env.FREQ || 1000000));
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Writing SPI LSB transmission mode 0 (MSB)');
+  console.log('[' + Util.unixtime() + ']', 'Debug:', this.SPI.lsbmode(false));
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Writing SPI mode 0');
+  console.log('[' + Util.unixtime() + ']', 'Debug:', this.SPI.mode(0));
+  console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Setting clock to 1MHz');
+  console.log('[' + Util.unixtime() + ']', 'Debug:', this.SPI.frequency(process.env.FREQ || 1000000));
 
   // Reset
-  console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'AUDIO_RST', LOW, this.Audio_Reset.write(LOW));
+  console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_RST', LOW, this.Audio_Reset.write(LOW));
   setTimeout(function() {
-    console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'AUDIO_RST', HIGH, that.Audio_Reset.write(HIGH));
+    console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_RST', HIGH, that.Audio_Reset.write(HIGH));
 
-    console.log('[' + (Date.now()/1000) + ']', 'Debug:', that.SPI.write(new Buffer(0xFF)));
+    console.log('[' + Util.unixtime() + ']', 'Debug:', that.SPI.write(new Buffer(0xFF)));
 
     // De-select Control
-    console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
+    console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_CS', HIGH, that.Audio_CS.write(HIGH));
 
     // De-select Data
-    console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'AUDIO_DCS', HIGH, that.Audio_DCS.write(HIGH));
+    console.log('[' + Util.unixtime() + ']', 'Debug:', 'AUDIO_DCS', HIGH, that.Audio_DCS.write(HIGH));
 
     that.setVolume.call(that, 20, 20)
       .then(function () {
-        console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'Reading SCI_MODE ...');
+        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_MODE ...');
 
         return that.readRegister.call(that, SCI_MODE);
       })
       .then(function (result) {
         MP3Mode = result;
-        console.log('[' + (Date.now()/1000) + ']', 'MP3Shield:', 'SCI_MODE (0x4800) = 0x' + MP3Mode.toString(16));
+        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_MODE (0x4800) = 0x' + MP3Mode.toString(16));
       })
       .catch(function (err) {
-        console.error('[' + (Date.now()/1000) + ']', 'Error:', 'Something went wrong!', arguments);
+        console.error('[' + Util.unixtime() + ']', 'Error:', 'Something went wrong!', arguments);
       });
 
 

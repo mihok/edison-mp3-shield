@@ -3,6 +3,7 @@ var MRAA = require('mraa');
 var EventEmitter = require('events');
 
 var util = require('util');
+var Util = require('./util.js');
 
 function ISR (gpio, mode) {
   this.fired = false;
@@ -19,7 +20,7 @@ util.inherits(ISR, EventEmitter);
 ISR.prototype.handler = function () {
   var that = this;
   return function () {
-    console.log('[' + (Date.now()/1000) + ']', 'Debug:', 'ISR', 'INTERRUPT!', arguments);
+    console.log('[' + Util.unixtime() + ']', 'Debug:', 'ISR', 'INTERRUPT!', arguments);
     that.fired = true;
     that.emit('interrupt');
     that.fired = false;
