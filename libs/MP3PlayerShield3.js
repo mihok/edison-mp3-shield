@@ -176,17 +176,30 @@ Shield.prototype.setup = function (callback) {
 
     that.setVolume.call(that, 20, 20)
       .then(function () {
-        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_MODE ...');
+        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_CLOCKF ...');
 
-        return that.readRegister.call(that, SCI_MODE);
+        return that.readRegister.call(that, SCI_CLOCKF);
       })
       .then(function (result) {
-        MP3Mode = result;
-        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_MODE (0x4800) = 0x' + MP3Mode.toString(16));
+        MP3Clock = result;
+        console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_CLOCKF = 0x' + MP3Clock.toString(16));
       })
       .catch(function (err) {
         console.error('[' + Util.unixtime() + ']', 'Error:', 'Something went wrong!', arguments);
       });
+
+      // .then(function () {
+      //   console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'Reading SCI_MODE ...');
+
+      //   return that.readRegister.call(that, SCI_MODE);
+      // })
+      // .then(function (result) {
+      //   MP3Mode = result;
+      //   console.log('[' + Util.unixtime() + ']', 'MP3Shield:', 'SCI_MODE (0x4800) = 0x' + MP3Mode.toString(16));
+      // })
+      // .catch(function (err) {
+      //   console.error('[' + Util.unixtime() + ']', 'Error:', 'Something went wrong!', arguments);
+      // });
 
 
 
